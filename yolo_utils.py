@@ -55,8 +55,11 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
     # for rescaling coordinates
     w,h = image.size
     # these are dimensions of training set images; box predictions are w.r.t. these dimensions
-    new_w = 1280
-    new_h = 720
+    new_w = 1280.
+    new_h = 720.
+    # conversion factors
+    conversion_w = w / new_w
+    conversion_h = h / new_h
 
     for i, c in reversed(list(enumerate(out_classes))):
         predicted_class = class_names[c]
@@ -71,10 +74,10 @@ def draw_boxes(image, out_scores, out_boxes, out_classes, class_names, colors):
         top, left, bottom, right = box
 
         # rescale coordinates
-        top = top / float(new_h) * h
-        left = left / float(new_w) * w
-        bottom = bottom / float(new_h) * h
-        right = right / float(new_w) * w
+        top = top * conversion_h
+        left = left * conversion_w
+        bottom = bottom * conversion_h
+        right = right * conversion_w
 
         top = max(0, np.floor(top + 0.5).astype('int32'))
         left = max(0, np.floor(left + 0.5).astype('int32'))
